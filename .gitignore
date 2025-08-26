@@ -1,0 +1,4 @@
+keyfile.json
+*.tfstate
+.terraform
+.opencode
