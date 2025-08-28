@@ -1,10 +1,3 @@
-# This file refactors the GKE cluster configuration to address the IP pool exhaustion error.
-# The secondary IP ranges for pods and services have been significantly increased to prevent
-# pool exhaustion issues.
-
-# ---------------------------------------------------------------------------------------------------------------------
-# PROVIDER CONFIGURATION
-# ---------------------------------------------------------------------------------------------------------------------
 terraform {
   required_providers {
     google = {
@@ -16,61 +9,48 @@ terraform {
 
 provider "google" {
   project = "cloudcon-2025"
-  region  = "australia-southeast1"
+  region  = "asia-southeast1"
 }
 
-# ---------------------------------------------------------------------------------------------------------------------
-# NETWORK CONFIGURATION
-# Set up a VPC and subnet with sufficiently large secondary IP ranges for GKE.
-# ---------------------------------------------------------------------------------------------------------------------
-
-# Creates a new VPC network.
 resource "google_compute_network" "default" {
   name                    = "cloudcon-2025-vpc"
   auto_create_subnetworks = false
   enable_ula_internal_ipv6 = true
 }
 
-# Creates a subnetwork for the GKE cluster with larger secondary ranges.
 resource "google_compute_subnetwork" "default" {
   name                     = "cloudcon-2025-subnet"
   ip_cidr_range            = "10.0.0.0/16"
-  region                   = "australia-southeast1"
+  region                   = "asia-southeast1"
   stack_type               = "IPV4_IPV6"
   ipv6_access_type         = "INTERNAL"
   network                  = google_compute_network.default.id
 
-  # Increased the services range from /29 to /20
   secondary_ip_range {
     range_name    = "services-range"
-    ip_cidr_range = "192.168.0.0/20" # Provides 4096 IP addresses
+    ip_cidr_range = "192.168.0.0/20"
   }
 
-  # Corrected: Changed the pod range to a non-overlapping block from the services range.
   secondary_ip_range {
     range_name    = "pod-ranges"
-    ip_cidr_range = "192.168.16.0/20" # Now provides 4096 IP addresses in a separate range
+    ip_cidr_range = "192.168.16.0/20"
   }
 }
-
-# ---------------------------------------------------------------------------------------------------------------------
-# GKE SERVICE ACCOUNT
-# A dedicated service account for the cluster nodes.
-# ---------------------------------------------------------------------------------------------------------------------
 
 resource "google_service_account" "default" {
   account_id   = "cloudcon-2025-gke-sa"
   display_name = "CloudCon2025 GKE service account"
 }
 
-# ---------------------------------------------------------------------------------------------------------------------
-# GKE CLUSTER
-# Creates the standard GKE cluster.
-# ---------------------------------------------------------------------------------------------------------------------
+resource "google_project_iam_member" "artifact_registry_reader" {
+  project = "cloudcon-2025"
+  role    = "roles/artifactregistry.reader"
+  member  = "serviceAccount:${google_service_account.default.email}"
+}
 
 resource "google_container_cluster" "primary" {
   name                     = "cloudcon-2025-cluster"
-  location                 = "australia-southeast1-a"
+  location                 = "asia-southeast1-b"
   network                  = google_compute_network.default.name
   subnetwork               = google_compute_subnetwork.default.name
   deletion_protection      = false
@@ -88,18 +68,14 @@ resource "google_container_cluster" "primary" {
   }
 }
 
-# ---------------------------------------------------------------------------------------------------------------------
-# GKE NODE POOL
-# Creates a separate node pool with the desired 3 nodes.
-# ---------------------------------------------------------------------------------------------------------------------
-
 resource "google_container_node_pool" "primary_nodes" {
   name       = "primary-node-pool"
-  location   = "australia-southeast1-a"
+  location   = "asia-southeast1-b"
   cluster    = google_container_cluster.primary.name
   node_count = 3
 
   node_config {
+    machine_type    = "t2a-standard-2"
     service_account = google_service_account.default.email
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
@@ -111,10 +87,15 @@ resource "google_container_node_pool" "primary_nodes" {
   }
 }
 
-# ---------------------------------------------------------------------------------------------------------------------
-# OUTPUTS
-# Provide outputs for easy access to cluster information after deployment.
-# ---------------------------------------------------------------------------------------------------------------------
+resource "google_artifact_registry_repository" "docker_repo" {
+  repository_id = "ratelimiting"
+
+  location = "asia-southeast1"
+
+  format = "DOCKER"
+
+  description = "Docker image repository for my application."
+}
 
 output "cluster_name" {
   description = "The name of the GKE cluster."
@@ -126,3 +107,7 @@ output "cluster_endpoint" {
   value       = google_container_cluster.primary.endpoint
 }
 
+output "repository_url" {
+  description = "The URL for pushing and pulling images."
+  value       = "https://<YOUR_GCP_REGION>-docker.pkg.dev/<YOUR_GCP_PROJECT_ID>/${google_artifact_registry_repository.docker_repo.repository_id}"
+}

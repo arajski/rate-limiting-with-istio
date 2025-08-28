@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rate Limits</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Rate Limits</h1>
+        <a class="button" href="/ratelimits/new">New Rate Limit</a>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Endpoint</th>
+                    <th>Limit Unit</th>
+                    <th>Limit Interval</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .}}
+                <tr>
+                    <td>{{.UserName}}</td>
+                    <td>{{.Endpoint}}</td>
+                    <td>{{.LimitUnit}}</td>
+                    <td>{{.LimitInterval}}</td>
+                    <td class="actions">
+                        <a href="/ratelimits/edit?id={{.ID}}">Edit</a>
+                        <a href="/ratelimits/delete?id={{.ID}}">Delete</a>
+                    </td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+        <a href="/" class="back-link">Back to Users</a>
+    </div>
+</body>
+</html>

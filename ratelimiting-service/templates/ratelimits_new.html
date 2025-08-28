@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New Rate Limit</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Create New Rate Limit</h1>
+        <form action="/ratelimits/create" method="POST">
+            <label for="user_id">User:</label>
+            <select name="user_id" required>
+                {{range .}}
+                <option value="{{.ID}}">{{.Name}}</option>
+                {{end}}
+            </select>
+            <label for="endpoint">Endpoint:</label>
+            <input type="text" name="endpoint" required>
+            <label for="limit_unit">Limit Unit:</label>
+            <input type="number" name="limit_unit" required>
+            <label for="limit_interval">Limit Interval:</label>
+            <select name="limit_interval" required>
+                <option value="second">Second</option>
+                <option value="minute">Minute</option>
+                <option value="hour">Hour</option>
+                <option value="day">Day</option>
+            </select>
+            <button class="button" type="submit">Save</button>
+        </form>
+        <a href="/ratelimits" class="back-link">Cancel</a>
+    </div>
+</body>
+</html>
+

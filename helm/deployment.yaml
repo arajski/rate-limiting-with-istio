@@ -13,6 +13,15 @@ spec:
       labels:
         app: nginx
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                - arm64
       containers:
       - name: nginx
         image: nginx:latest
@@ -30,3 +39,50 @@ spec:
     protocol: TCP
   selector:
     app: nginx
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ratelimiting-service 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ratelimiting-service 
+  template:
+    metadata:
+      labels:
+        app: ratelimiting-service 
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                - arm64
+      containers:
+      - name: ratelimiting-service 
+        image: asia-southeast1-docker.pkg.dev/cloudcon-2025/ratelimiting/ratelimiting-service:0.0.11
+        ports:
+        - containerPort: 8080
+        - containerPort: 18000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ratelimiting-service
+spec:
+  ports:
+  - port: 8080
+    name: http
+    targetPort: 8080
+    protocol: TCP
+  - port: 18000
+    name: xds
+    targetPort: 18000
+    protocol: TCP
+  selector:
+    app: ratelimiting-service

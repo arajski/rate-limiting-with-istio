@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata:
-  name: nginx
+  name: almost-ai 
 spec:
   selector:
     istio: ingressgateway # use the default ingress gateway
@@ -11,20 +11,38 @@ spec:
       name: http
       protocol: http
     hosts:
-    - "api.cloudcon.com"
+    - "api.almost.ai"
+    - "admin.almost.ai"
 ---
 apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
-  name: nginx-virtualservice
+  name: api-almost-ai
 spec:
   hosts:
-  - "api.cloudcon.com"
+  - "api.almost.ai"
   gateways:
-  - nginx
+  - almost-ai
   http:
   - route:
     - destination:
         host: nginx
         port:
           number: 80
+
+---
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: admin-almost-ai
+spec:
+  hosts:
+  - "admin.almost.ai"
+  gateways:
+  - almost-ai
+  http:
+  - route:
+    - destination:
+        host: ratelimiting-service
+        port:
+          number: 8080

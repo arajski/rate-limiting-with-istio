@@ -26,11 +26,16 @@ data:
   config.yaml: |
       domain: ratelimit
       descriptors:
-        - key: PATH
+        - key: "path" 
           value: "/payments"
           rate_limit:
             unit: minute
             requests_per_unit: 5
+        - key: "auth5"
+          value: "2i9j0" 
+          rate_limit:
+            unit: "minute"
+            requests_per_unit: 3
 ---
 ##################################################################################################
 apiVersion: v1
@@ -60,6 +65,15 @@ spec:
       labels:
         app: redis
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                - arm64
       containers:
       - image: redis:alpine
         imagePullPolicy: IfNotPresent
@@ -109,6 +123,15 @@ spec:
       labels:
         app: ratelimit
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                - arm64
       containers:
       - image: envoyproxy/ratelimit:30a4ce1a # 2024/08/01
         imagePullPolicy: IfNotPresent
@@ -135,6 +158,13 @@ spec:
           value: "::"
         - name: GRPC_HOST
           value: "::"
+        - name: CONFIG_TYPE 
+          value: GRPC_XDS_SOTW
+        - name: CONFIG_GRPC_XDS_NODE_ID 
+          value: "test-node" 
+        - name: CONFIG_GRPC_XDS_SERVER_URL 
+          value: ratelimiting-service.default.svc.cluster.local:18000 
+
         ports:
         - containerPort: 8080
         - containerPort: 8081

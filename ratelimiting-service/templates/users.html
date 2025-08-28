@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>API Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Users</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>API Token</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .}}
+                <tr>
+                    <td>{{.Name}}</td>
+                    <td><pre>{{.MaskedToken}}</pre></td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+        <a href="/ratelimits" class="back-link">Manage Rate Limits</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Rate Limit</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Rate Limit for {{.Limit.UserName}}</h1>
+        <form action="/ratelimits/edit" method="POST">
+            <input type="hidden" name="id" value="{{.Limit.ID}}">
+            <label for="user_id">User:</label>
+            <select name="user_id" required>
+                {{range .Users}}
+                <option value="{{.ID}}" {{if eq .ID $.Limit.UserID}}selected{{end}}>{{.Name}}</option>
+                {{end}}
+            </select>
+            <label for="endpoint">Endpoint:</label>
+            <input type="text" name="endpoint" value="{{.Limit.Endpoint}}" required>
+            <label for="limit_unit">Limit Unit:</label>
+            <input type="number" name="limit_unit" value="{{.Limit.LimitUnit}}" required>
+            <label for="limit_interval">Limit Interval:</label>
+            <select name="limit_interval" required>
+                <option value="second" {{if eq .Limit.LimitInterval "second"}}selected{{end}}>Second</option>
+                <option value="minute" {{if eq .Limit.LimitInterval "minute"}}selected{{end}}>Minute</option>
+                <option value="hour" {{if eq .Limit.LimitInterval "hour"}}selected{{end}}>Hour</option>
+                <option value="day" {{if eq .Limit.LimitInterval "day"}}selected{{end}}>Day</option>
+            </select>
+            <button class="button" type="submit">Update Rate Limit</button>
+        </form>
+        <a href="/ratelimits" class="back-link">Cancel</a>
+    </div>
+</body>
+</html>
