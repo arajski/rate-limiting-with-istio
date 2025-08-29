@@ -4,8 +4,8 @@ This is a sample project demonstrating how to implement domain driven rate limit
 ## Infrastructure
 Terraform for basic GKE cluster is available under `/terraform` 
 
-## Helm charts
-All helm charts deployed to cluster are available under `/helm`. 
+## Kuberenetes manifests 
+All objects deployed to cluster are available under `/manifests`. 
 As a prerequisite, the project requires istio to be installed, which can be done by running:
 ```sh
 istioctl install --set profile=default -f istio-values.yaml -y
