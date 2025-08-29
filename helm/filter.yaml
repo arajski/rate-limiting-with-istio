@@ -5,7 +5,6 @@ metadata:
   namespace: istio-system
 spec:
   workloadSelector:
-    # select by label in the same namespace
     labels:
       istio: ingressgateway
   configPatches:
