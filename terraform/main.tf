@@ -80,34 +80,12 @@ resource "google_container_node_pool" "primary_nodes" {
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]
-    labels = {
-      foo = "bar"
-    }
-    tags = ["foo", "bar"]
   }
 }
 
 resource "google_artifact_registry_repository" "docker_repo" {
   repository_id = "ratelimiting"
-
   location = "asia-southeast1"
-
   format = "DOCKER"
-
-  description = "Docker image repository for my application."
-}
-
-output "cluster_name" {
-  description = "The name of the GKE cluster."
-  value       = google_container_cluster.primary.name
-}
-
-output "cluster_endpoint" {
-  description = "The endpoint of the GKE cluster."
-  value       = google_container_cluster.primary.endpoint
-}
-
-output "repository_url" {
-  description = "The URL for pushing and pulling images."
-  value       = "https://<YOUR_GCP_REGION>-docker.pkg.dev/<YOUR_GCP_PROJECT_ID>/${google_artifact_registry_repository.docker_repo.repository_id}"
+  description = "Rate limiting service"
 }
