@@ -1,5 +1,6 @@
 # CloudCon 2025 - Implementing Custom rate limiting with Istio
 This is a sample project demonstrating how to implement domain driven rate limiting with istio.
+The end goal is to setup rate limiting for an imaginary company called almost.ai...because it almost works :P
 
 ## Infrastructure
 Terraform for basic GKE cluster is available under `/terraform` 
