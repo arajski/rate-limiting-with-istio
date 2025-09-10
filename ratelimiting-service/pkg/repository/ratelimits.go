@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/arajski/custom-rate-limiting-cloudcon-2025/ratelimiting-service/internal/domain"
+	"github.com/arajski/rate-limiting-with-istio/ratelimiting-service/internal/domain"
 )
 
 type RateLimits struct {

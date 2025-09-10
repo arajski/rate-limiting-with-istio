@@ -4,8 +4,8 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/arajski/custom-rate-limiting-cloudcon-2025/ratelimiting-service/internal/domain"
-	"github.com/arajski/custom-rate-limiting-cloudcon-2025/ratelimiting-service/pkg/service"
+	"github.com/arajski/rate-limiting-with-istio/ratelimiting-service/internal/domain"
+	"github.com/arajski/rate-limiting-with-istio/ratelimiting-service/pkg/service"
 )
 
 type HTTPHandlers struct {

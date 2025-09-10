@@ -1,4 +1,4 @@
-module github.com/arajski/custom-rate-limiting-cloudcon-2025/ratelimiting-service
+module github.com/arajski/rate-limiting-with-istio/ratelimiting-service
 
 go 1.24.1
 

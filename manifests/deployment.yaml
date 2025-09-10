@@ -52,7 +52,7 @@ spec:
                 - arm64
       containers:
       - name: ratelimiting-service 
-        image: asia-southeast1-docker.pkg.dev/cloudcon-2025/ratelimiting/ratelimiting-service:0.0.11
+        image: <REPOSITORY_URL>/ratelimiting-service:<TAG>
         ports:
         - containerPort: 8080
         - containerPort: 18000

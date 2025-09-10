@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/arajski/custom-rate-limiting-cloudcon-2025/ratelimiting-service/internal/domain"
+	"github.com/arajski/rate-limiting-with-istio/ratelimiting-service/internal/domain"
 )
 
 type Users struct {
@@ -37,7 +37,7 @@ func (u *Users) GetAPITokenByID(id int) (string, error) {
 	err := u.DB.QueryRow("SELECT api_token FROM users WHERE id = ?", id).Scan(&token)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return "", nil // Or a specific error indicating the user was not found
+			return "", fmt.Errorf("could not find the api token")
 		}
 		return "", err
 	}

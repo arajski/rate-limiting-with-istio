@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/arajski/custom-rate-limiting-cloudcon-2025/ratelimiting-service/internal/domain"
-	"github.com/arajski/custom-rate-limiting-cloudcon-2025/ratelimiting-service/pkg/repository"
+	"github.com/arajski/rate-limiting-with-istio/ratelimiting-service/internal/domain"
+	"github.com/arajski/rate-limiting-with-istio/ratelimiting-service/pkg/repository"
 	"github.com/envoyproxy/go-control-plane/pkg/cache/types"
 	"github.com/envoyproxy/go-control-plane/pkg/cache/v3"
 	"github.com/envoyproxy/go-control-plane/pkg/resource/v3"
